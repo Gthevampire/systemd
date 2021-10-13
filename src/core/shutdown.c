@@ -321,7 +321,7 @@ int main(int argc, char *argv[]) {
 
         disable_coredumps();
 
-        log_info("Sending SIGTERM to remaining processes...");
+        //log_info("Sending SIGTERM to remaining processes...");
         broadcast_signal(SIGTERM, true, true, arg_timeout);
 
         log_info("Sending SIGKILL to remaining processes...");
@@ -348,11 +348,11 @@ int main(int argc, char *argv[]) {
                         cg_trim(SYSTEMD_CGROUP_CONTROLLER, cgroup, false);
 
                 if (need_umount) {
-                        log_info("Unmounting file systems.");
+                 //       log_info("Unmounting file systems.");
                         r = umount_all(&changed, umount_log_level);
                         if (r == 0) {
                                 need_umount = false;
-                                log_info("All filesystems unmounted.");
+                   //             log_info("All filesystems unmounted.");
                         } else if (r > 0)
                                 log_info("Not all file systems unmounted, %d left.", r);
                         else
@@ -360,11 +360,11 @@ int main(int argc, char *argv[]) {
                 }
 
                 if (need_swapoff) {
-                        log_info("Deactivating swaps.");
+                     //   log_info("Deactivating swaps.");
                         r = swapoff_all(&changed);
                         if (r == 0) {
                                 need_swapoff = false;
-                                log_info("All swaps deactivated.");
+                       //         log_info("All swaps deactivated.");
                         } else if (r > 0)
                                 log_info("Not all swaps deactivated, %d left.", r);
                         else
@@ -372,19 +372,19 @@ int main(int argc, char *argv[]) {
                 }
 
                 if (need_loop_detach) {
-                        log_info("Detaching loop devices.");
                         r = loopback_detach_all(&changed, umount_log_level);
                         if (r == 0) {
                                 need_loop_detach = false;
-                                log_info("All loop devices detached.");
+                                log_info("-TEST ....All loop devices detached.");
                         } else if (r > 0)
                                 log_info("Not all loop devices detached, %d left.", r);
                         else
                                 log_error_errno(r, "Failed to detach loop devices: %m");
+                //        log_info("end");
                 }
 
                 if (need_dm_detach) {
-                        log_info("Detaching DM devices.");
+                        //log_info("Detaching DM devices.");
                         r = dm_detach_all(&changed, umount_log_level);
                         if (r == 0) {
                                 need_dm_detach = false;
@@ -476,11 +476,15 @@ int main(int argc, char *argv[]) {
                 cmd = RB_POWER_OFF; /* We cannot exit() on the host, fallback on another method. */
         }
 
+        log_info("_______________  Switch cmd _______________");
+
         switch (cmd) {
 
         case LINUX_REBOOT_CMD_KEXEC:
 
                 if (!in_container) {
+                        log_info("_______________ In Container  _______________");
+
                         /* We cheat and exec kexec to avoid doing all its work */
                         log_info("Rebooting with kexec.");
 
@@ -519,6 +523,8 @@ int main(int argc, char *argv[]) {
                 assert_not_reached("Unknown magic");
         }
 
+        sleep(1);
+        log_info("call reboot");
         (void) reboot(cmd);
         if (errno == EPERM && in_container) {
                 /* If we are in a container, and we lacked

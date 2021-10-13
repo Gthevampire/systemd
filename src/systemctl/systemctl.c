@@ -6999,7 +6999,7 @@ static void systemctl_help(void) {
         (void) pager_open(arg_no_pager, false);
 
         printf("%s [OPTIONS...] {COMMAND} ...\n\n"
-               "Query or send control commands to the systemd manager.\n\n"
+               "HELLLOOOO Query or send control commands to the systemd manager.\n\n"
                "  -h --help           Show this help\n"
                "     --version        Show package version\n"
                "     --system         Connect to system manager\n"
